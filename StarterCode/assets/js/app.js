@@ -21,10 +21,10 @@ var svg = d3
     .attr('height', svgHeight)
     .attr('width', svgWidth);
 var chartGroup = svg.append('g')
-    .attr('transform', 'translate(${chartMargin' )
+    .attr('transform', `translate(${chartMargin.left}, ${chartMargin.top})`)
 
 //load data from csv
-d3.csv("data.csv").then(function(realData) {
+d3.csv("assets/data/data.csv").then(function(realData) {
     console.log(realData);
     realData.forEach(function(data) {
         data.healthcare = +data.healthcare;
@@ -33,20 +33,19 @@ d3.csv("data.csv").then(function(realData) {
 
 //configure a scale for x and y axis
 var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(realData, d => d.poverty)*.9, d3.max(realData)*1.2])
-    .range([0, chartWidth])
-    .padding (0.1);
-
+    .domain([d3.min(realData, d => d.poverty)*.9, d3.max(realData, d => d.poverty)*1.2])
+    .range([0, chartWidth]);
+    
 var yLinearScale = d3.scaleLinear()
     .domain([2, d3.max(realData, d => d.healthcare)])
-    .range([chartHeight, 0])
+    .range([chartHeight, 0]);
 
 //create chart axes and append them to the chart
 var bottomAxis = d3.axisBottom(xLinearScale);
 var leftAxis = d3.axisLeft(yLinearScale);
 
 chartGroup.append("g")
-    .attr('transform', 'translate(0, ${chartHeight})')
+    .attr("transform", `translate(0, ${chartHeight})`)
     .call(bottomAxis);
 
 chartGroup.append("g")
@@ -74,14 +73,14 @@ clabels
     });
 
 chartGroup.append("text")
-    .attr("transform", "rotate(-90")
+    .attr("transform", "rotate(-90)")
     .attr("x", 0 - (chartHeight/2))
     .attr("y", 0 - chartMargin.left + 50)
     .attr("class", "axisText")
     .text("Lacks Healthcare (%)");
 
 chartGroup.append("text")
-    .attr("transform", 'translate(${width/2}, ${height + margin.top + 30})')
+    .attr("transform", `translate(${chartWidth/2}, ${chartHeight + chartMargin.top + 30})`)
     .attr("class", "axisText")
     .text("In Poverty (%)");
 
